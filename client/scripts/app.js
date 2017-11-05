@@ -60,7 +60,7 @@ var app = {
     $.ajax({
       url: app.server,
       type: 'GET',
-      data: { order: '-createdAt' },
+      data: {},
       contentType: 'application/json',
       success: function(data) {
         //console.log(data);

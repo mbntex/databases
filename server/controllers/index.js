@@ -23,35 +23,50 @@ var stubbedMessages = [{username: 'BillyTheKidd', text: 'Yo there!', roomname: '
 module.exports = {
   messages: {
     options: function (req, res) {
-      console.log('hello OPTIONS');
+      // console.log('CONTROLLER OPTIONS RAN');
       var status = 200;
       res.writeHead(status, corsHeaders);
       res.end();
     },
 
     get: function (req, res) {
-      // console.log('hello GET');
-      // console.log('stubs = ', stubbedMessages[0]);
-      var status = 200;
-      res.writeHead(status, corsHeaders);
-      res.end(JSON.stringify({results: stubbedMessages}));
+      models.messages.get(function(err, results) {
+        if (err) { console.log('ERROR', err); }
+        if (results) { 
+          // console.log('HANDLE THIS DATA', results); 
+          res.writeHead(200, corsHeaders);
+          res.end(JSON.stringify({results: results}));
+        }
+      });
+      
 
     }, // a function which handles a get request for all messages
+
+
+// // // MATCHES WHY NOT ON OTHER PAGE>
+//     get: function (req, res) {
+//       models.messages.get(req, res);
+//       // console.log('CONTROLLER GET RAN');
+//       // console.log('stubs = ', stubbedMessages[0]);
+//       // var status = 200;
+//       // res.writeHead(status, corsHeaders);
+//       //res.end(JSON.stringify({results: stubbedMessages}));
+
+//     }, // a function which handles a get request for all messages
+
+///////////////////
+
     post: function (req, res) {
       var body = '';
       req.setEncoding = 'utf8';
       req.on('data', function(chunk) { body += chunk; });
       req.on('end', function () { 
-        
-        // console.log('BBBBODY = ', body);
-        // console.log('REQ.BBBBODY = ', req.body);
-        // var testItem = req.url;
-        // console.log('TEST RESULT!!! = ', testItem);
-        // console.log('TYPE OF TEST RESULT!!! = ', typeof testItem);
-
-
+        models.messages.post(JSON.parse(body));
+        // console.log('BODY = ', body);
+        // console.log('REQ.BODY = ', req.body);
+       
         console.log('WHAT WE ARE RESPONDING WITH IN POST = ', JSON.parse(body));
-        stubbedMessages.push (JSON.parse(body));
+        //stubbedMessages.push (JSON.parse(body));
         res.writeHead(201, corsHeaders);
         res.end(body); 
       });
@@ -66,3 +81,5 @@ module.exports = {
   }
 };
 
+
+module.exports.corsHeaders = corsHeaders;
